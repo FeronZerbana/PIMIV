@@ -64,10 +64,10 @@ Como diferentes membros da equipe atuarão em frentes distintas (**Web**, **Desk
 5. **Push direcionado para a sua branch**:
    * `git push -u origin feat/web/<nome-da-funcionalidade>`
 
-> Para obter instruções detalhadas, prevenção contra `detached HEAD`, perigos de `push --force` e resolução de problemas, consulte o documento completo: [**`GIT-INSTRUCTIONS.md`**](file:///c:/Users/vinic/Documents/PIM/GIT-INSTRUCTIONS.md).
+> Para obter instruções detalhadas, prevenção contra `detached HEAD`, perigos de `push --force` e resolução de problemas, consulte o documento completo: [**`GIT-INSTRUCTIONS.md`**](GIT-INSTRUCTIONS.md).
 
 ---
 
 ## 4. Governança e Regras de Desenvolvimento
 
-Consulte [`Vault/README.md`](file:///c:/Users/vinic/Documents/PIM/Vault/README.md) e [`Vault/00-Meta/AGENTS.md`](file:///c:/Users/vinic/Documents/PIM/Vault/00-Meta/AGENTS.md) para detalhes sobre as regras de desenvolvimento, a política de **Proibido Código Sem Spec** e as diretrizes formais de documentação sem emojis.
+Consulte [`Vault/README.md`](Vault/README.md) e [`Vault/00-Meta/AGENTS.md`](Vault/00-Meta/AGENTS.md) para detalhes sobre as regras de desenvolvimento, a política de **Proibido Código Sem Spec** e as diretrizes formais de documentação sem emojis.
