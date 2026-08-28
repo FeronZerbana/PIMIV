@@ -1,4 +1,4 @@
-# Projeto Integrado Multidisciplinar (PIM IV) - E-Commerce Omnichannel
+# Projeto Integrado Multidisciplinar (PIM IV)
 
 > Repositório agregador e orquestrador do projeto PIM IV, conectando a governança documental e a implementação dos sistemas Web, Desktop e Mobile através de submódulos Git.
 
