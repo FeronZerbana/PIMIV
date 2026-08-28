@@ -1,0 +1,6 @@
+[submodule "Implementacao"]
+	path = Implementacao
+	url = https://github.com/FeronZerbana/PIMIV_Implementacao.git
+[submodule "Vault"]
+	path = Vault
+	url = https://github.com/FeronZerbana/PIMIV_Vault.git

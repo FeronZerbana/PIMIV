@@ -1,0 +1,10 @@
+# OS files
+Thumbs.db
+[Dd]esktop.ini
+.DS_Store
+
+# Editor temp files
+.vs/
+.vscode/
+*.swp
+*~
