@@ -9,6 +9,7 @@
 ```text
 PIM/
 ├── .gitmodules             # Definição e mapeamento dos submódulos remotos
+├── GIT-INSTRUCTIONS.md     # Guia completo de versionamento Git e fluxo de branches
 ├── Documentacao/           # Relatórios acadêmicos, diagramas e entregáveis formais do PIM
 ├── Implementacao/          # [Submódulo Git] Código-fonte (Web, Desktop, Mobile)
 │   ├── WEB/                # Sistema Web em ASP.NET Core MVC
@@ -42,17 +43,31 @@ git submodule update --init --recursive
 
 ---
 
-## 3. Branches e Fluxo de Desenvolvimento
+## 3. Guia Rápido de Contribuição por Plataforma
 
-O repositório `Implementacao` adota o seguinte modelo de ramificações:
-* `feat/web`: Desenvolvimento do sistema Web (ASP.NET Core MVC).
-* `feat/desktop`: Desenvolvimento do sistema Desktop (PDV / Hardware local).
-* `feat/mobile`: Desenvolvimento do sistema Mobile (App).
-* `develop`: Branch de integração e testes conjuntos.
-* `production`: Branch de entrega final consolidada e homologada.
+Como diferentes membros da equipe atuarão em frentes distintas (**Web**, **Desktop** e **Mobile**), siga o fluxo abaixo:
+
+1. **Acesse a pasta de implementação**:
+   ```bash
+   cd Implementacao
+   ```
+2. **Posicione-se na branch base da sua equipe**:
+   * Equipe Web: `git checkout feat/web && git pull origin feat/web`
+   * Equipe Desktop: `git checkout feat/desktop && git pull origin feat/desktop`
+   * Equipe Mobile: `git checkout feat/mobile && git pull origin feat/mobile`
+3. **Crie uma branch de feature com nomenclatura padronizada**:
+   * `feat/web/<nome-da-funcionalidade>`
+   * `feat/desktop/<nome-da-funcionalidade>`
+   * `feat/mobile/<nome-da-funcionalidade>`
+4. **Commits padronizados e sem emojis**:
+   * `git commit -m "feat(web): descricao da funcionalidade"`
+5. **Push direcionado para a sua branch**:
+   * `git push -u origin feat/web/<nome-da-funcionalidade>`
+
+> Para obter instruções detalhadas, prevenção contra `detached HEAD`, perigos de `push --force` e resolução de problemas, consulte o documento completo: [**`GIT-INSTRUCTIONS.md`**](file:///c:/Users/vinic/Documents/PIM/GIT-INSTRUCTIONS.md).
 
 ---
 
 ## 4. Governança e Regras de Desenvolvimento
 
-Consulte [`Vault/README.md`](file:///c:/Users/vinic/Documents/PIM/Vault/README.md) e [`Vault/00-Meta/AGENTS.md`](file:///c:/Users/vinic/Documents/PIM/Vault/00-Meta/AGENTS.md) para detalhes sobre as regras de desenvolvimento, a política de Proibido Código Sem Spec e as diretrizes formais de documentação sem emojis.
+Consulte [`Vault/README.md`](file:///c:/Users/vinic/Documents/PIM/Vault/README.md) e [`Vault/00-Meta/AGENTS.md`](file:///c:/Users/vinic/Documents/PIM/Vault/00-Meta/AGENTS.md) para detalhes sobre as regras de desenvolvimento, a política de **Proibido Código Sem Spec** e as diretrizes formais de documentação sem emojis.
