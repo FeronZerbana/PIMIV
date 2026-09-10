@@ -13,7 +13,8 @@ O projeto utiliza o modelo de **Repositório Agregador com Git Submodules**. Iss
 ├── .gitmodules             <- Mapeamento dos submódulos remotos
 ├── GIT-INSTRUCTIONS.md     <- Este guia prático de versionamento
 ├── Documentacao/           <- Relatórios acadêmicos e diagramas formais do PIM
-├── Implementacao/          <- [SUBMÓDULO: PIMIV_Implementacao] Código-fonte (Web, Desktop, Mobile)
+├── Implementacao/          <- [SUBMÓDULO: PIMIV_Implementacao] Código-fonte (API, Web, Desktop, Mobile)
+│   ├── API/                <- Serviço central (ASP.NET Core Web API)
 │   ├── WEB/                <- Aplicação Web (ASP.NET Core MVC)
 │   ├── DESKTOP/            <- Aplicação Desktop (PDV / Frente de Caixa)
 │   └── MOBILE/             <- Aplicação Mobile
@@ -61,6 +62,7 @@ No submódulo `Implementacao`, o ciclo de vida do código é segregado entre pla
 | :--- | :--- | :--- |
 | `production` | Versão final consolidada, estável e homologada | Integração final de entrega |
 | `develop` | Branch de integração contínua e resolução de conflitos | Toda a equipe |
+| `feat/api` | Branch base de desenvolvimento do serviço central de API | Desenvolvedores Backend / API |
 | `feat/web` | Branch base de desenvolvimento da plataforma Web | Desenvolvedores Web |
 | `feat/desktop` | Branch base de desenvolvimento da plataforma Desktop | Desenvolvedores Desktop |
 | `feat/mobile` | Branch base de desenvolvimento da plataforma Mobile | Desenvolvedores Mobile |
@@ -102,13 +104,49 @@ Se você fizer commits em estado de `detached HEAD`, **seus commits não pertenc
 **Como verificar e corrigir**:
 1. Execute `git status`.
 2. Se a mensagem indicar `HEAD detached at ...`, reposicione-se imediatamente na branch base da sua equipe antes de realizar qualquer alteração:
+   * **Equipe Backend API**: `git checkout feat/api`
    * **Equipe Web**: `git checkout feat/web`
    * **Equipe Desktop**: `git checkout feat/desktop`
    * **Equipe Mobile**: `git checkout feat/mobile`
 
 ---
 
-### 4.3. Fluxo de Trabalho do Desenvolvedor WEB
+### 4.3. Fluxo de Trabalho do Desenvolvedor BACKEND API
+
+A equipe de Backend é responsável pelo serviço central `PIM_WebAPI` em **ASP.NET Core Web API** localizado em `Implementacao/API/PIM_WebAPI/`.
+
+#### Passo a Passo para Nova Feature de API:
+1. **Posicione-se e atualize a branch base da API**:
+   ```bash
+   git checkout feat/api
+   git pull origin feat/api
+   ```
+2. **Crie sua branch de feature derivada de `feat/api`**:
+   * Padrão: `feat/api/<identificador-ou-nome-da-tarefa>`
+   * Exemplo:
+     ```bash
+     git checkout -b feat/api/estrutura-contexto-banco
+     ```
+3. **Desenvolva o código**:
+   * Crie Controllers, DTOs e Services exclusivamente dentro de `Implementacao/API/PIM_WebAPI/`.
+   * Consulte as regras de precificação, estoque e contratos em `Vault/01-Core-Domain/`.
+4. **Verifique o status das alterações**:
+   ```bash
+   git status
+   ```
+5. **Realize o commit**:
+   ```bash
+   git add API/
+   git commit -m "feat(api): configuracao do DbContext e injecao de dependencias"
+   ```
+6. **Suba para o repositório remoto**:
+   ```bash
+   git push -u origin feat/api/estrutura-contexto-banco
+   ```
+
+---
+
+### 4.4. Fluxo de Trabalho do Desenvolvedor WEB
 
 A equipe Web é responsável pela aplicação e-commerce em **ASP.NET Core MVC** localizada em `Implementacao/WEB/`.
 
@@ -143,7 +181,7 @@ A equipe Web é responsável pela aplicação e-commerce em **ASP.NET Core MVC**
 
 ---
 
-### 4.4. Fluxo de Trabalho do Desenvolvedor DESKTOP
+### 4.5. Fluxo de Trabalho do Desenvolvedor DESKTOP
 
 A equipe Desktop é responsável pela aplicação de **Ponto de Venda (PDV / Frente de Caixa)** e comunicação com periféricos locais, localizada em `Implementacao/DESKTOP/`.
 
@@ -178,7 +216,7 @@ A equipe Desktop é responsável pela aplicação de **Ponto de Venda (PDV / Fre
 
 ---
 
-### 4.5. Fluxo de Trabalho do Desenvolvedor MOBILE
+### 4.6. Fluxo de Trabalho do Desenvolvedor MOBILE
 
 A equipe Mobile é responsável pelo aplicativo do cliente (com suporte offline e notificações push), localizado em `Implementacao/MOBILE/`.
 
@@ -213,12 +251,12 @@ A equipe Mobile é responsável pelo aplicativo do cliente (com suporte offline 
 
 ---
 
-### 4.6. Checklist de Validação Pré-Desenvolvimento
+### 4.7. Checklist de Validação Pré-Desenvolvimento
 Antes de iniciar qualquer codificação em qualquer plataforma:
 - [ ] A funcionalidade possui especificação validada em `Vault/04-Specs-Backlog/Active/`? (Regra: Proibido Código Sem Spec).
 - [ ] O terminal está posicionado dentro de `Implementacao/`?
 - [ ] A branch base da sua plataforma foi atualizada via `git pull`?
-- [ ] A nova branch foi criada com o prefixo correto (`feat/web/...`, `feat/desktop/...`, `feat/mobile/...`)?
+- [ ] A nova branch foi criada com o prefixo correto (`feat/api/...`, `feat/web/...`, `feat/desktop/...`, `feat/mobile/...`)?
 
 ---
 
@@ -264,7 +302,7 @@ git push origin feat/web/minha-feature
 * **Prevenção**: Observe o prompt do terminal ou execute `pwd` / `Get-Location` para garantir que está dentro de `Implementacao/`.
 
 ### 7.2. Perigo 2: Uso Destrutivo de `git push --force`
-* **Causa**: Forçar a reescrita de histórico em branches compartilhadas (`develop`, `production`, `feat/web`, `feat/desktop`, `feat/mobile`).
+* **Causa**: Forçar a reescrita de histórico em branches compartilhadas (`develop`, `production`, `feat/api`, `feat/web`, `feat/desktop`, `feat/mobile`).
 * **Impacto**: Sobrescreve e apaga o trabalho de outros desenvolvedores que já enviaram commits para o GitHub.
 * **Prevenção**:
   * É **estritamente proibido** utilizar `--force` em branches compartilhadas.
@@ -312,8 +350,8 @@ git push origin master
 git branch branch-temporaria
 
 # 2. Mude para a branch base correta
-git checkout feat/web   # ou feat/desktop / feat/mobile
-git pull origin feat/web
+git checkout feat/api   # ou feat/web / feat/desktop / feat/mobile
+git pull origin feat/api
 
 # 3. Crie sua branch definitiva e aplique as alteracoes da branch temporaria
 git checkout -b feat/web/minha-feature

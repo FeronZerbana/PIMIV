@@ -11,7 +11,8 @@ PIM/
 ├── .gitmodules             # Definição e mapeamento dos submódulos remotos
 ├── GIT-INSTRUCTIONS.md     # Guia completo de versionamento Git e fluxo de branches
 ├── Documentacao/           # Relatórios acadêmicos, diagramas e entregáveis formais do PIM
-├── Implementacao/          # [Submódulo Git] Código-fonte (Web, Desktop, Mobile)
+├── Implementacao/          # [Submódulo Git] Código-fonte (API, Web, Desktop, Mobile)
+│   ├── API/                # Serviço central ASP.NET Core Web API
 │   ├── WEB/                # Sistema Web em ASP.NET Core MVC
 │   ├── DESKTOP/            # Sistema Desktop / PDV / Frente de Caixa
 │   └── MOBILE/             # Sistema Mobile
@@ -45,24 +46,26 @@ git submodule update --init --recursive
 
 ## 3. Guia Rápido de Contribuição por Plataforma
 
-Como diferentes membros da equipe atuarão em frentes distintas (**Web**, **Desktop** e **Mobile**), siga o fluxo abaixo:
+Como diferentes membros da equipe atuarão em frentes distintas (**API**, **Web**, **Desktop** e **Mobile**), siga o fluxo abaixo:
 
 1. **Acesse a pasta de implementação**:
    ```bash
    cd Implementacao
    ```
 2. **Posicione-se na branch base da sua equipe**:
+   * Equipe Backend API: `git checkout feat/api && git pull origin feat/api`
    * Equipe Web: `git checkout feat/web && git pull origin feat/web`
    * Equipe Desktop: `git checkout feat/desktop && git pull origin feat/desktop`
    * Equipe Mobile: `git checkout feat/mobile && git pull origin feat/mobile`
 3. **Crie uma branch de feature com nomenclatura padronizada**:
+   * `feat/api/<nome-da-funcionalidade>`
    * `feat/web/<nome-da-funcionalidade>`
    * `feat/desktop/<nome-da-funcionalidade>`
    * `feat/mobile/<nome-da-funcionalidade>`
 4. **Commits padronizados e sem emojis**:
-   * `git commit -m "feat(web): descricao da funcionalidade"`
+   * `git commit -m "feat(api): descricao da funcionalidade"`
 5. **Push direcionado para a sua branch**:
-   * `git push -u origin feat/web/<nome-da-funcionalidade>`
+   * `git push -u origin feat/api/<nome-da-funcionalidade>`
 
 > Para obter instruções detalhadas, prevenção contra `detached HEAD`, perigos de `push --force` e resolução de problemas, consulte o documento completo: [**`GIT-INSTRUCTIONS.md`**](GIT-INSTRUCTIONS.md).
 
