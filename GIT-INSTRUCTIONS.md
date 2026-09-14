@@ -56,6 +56,8 @@ git submodule update --init --recursive
 
 ## 3. Topologia de Branches e Atribuição de Responsabilidades
 
+### 3.1. Submódulo Implementacao (Código-Fonte)
+
 No submódulo `Implementacao`, o ciclo de vida do código é segregado entre plataformas para permitir desenvolvimento concorrente sem bloqueios mútuos:
 
 | Branch | Responsabilidade | Quem Atua |
@@ -66,6 +68,20 @@ No submódulo `Implementacao`, o ciclo de vida do código é segregado entre pla
 | `feat/web` | Branch base de desenvolvimento da plataforma Web | Desenvolvedores Web |
 | `feat/desktop` | Branch base de desenvolvimento da plataforma Desktop | Desenvolvedores Desktop |
 | `feat/mobile` | Branch base de desenvolvimento da plataforma Mobile | Desenvolvedores Mobile |
+
+### 3.2. Submódulo Vault (Documentação e SSOT)
+
+No submódulo `Vault`, a documentação é isolada por subsistema para que múltiplos desenvolvedores possam documentar simultaneamente sem bloqueios de envio (`non-fast-forward push`):
+
+| Branch | Responsabilidade | Quem Atua |
+| :--- | :--- | :--- |
+| `master` | Fonte Única da Verdade oficial consolidada e homologada | Atualizações exclusivamente via PR ou merge integrado |
+| `docs/api` | Especificações da Web API central, endpoints e contratos OpenAPI | Desenvolvedores Backend / API |
+| `docs/web` | Especificações da aplicação Web MVC, Razor views e fluxos UX | Desenvolvedores Web |
+| `docs/desktop` | Especificações do PDV Desktop e comunicação com periféricos | Desenvolvedores Desktop |
+| `docs/mobile` | Especificações do app Mobile, armazenamento offline e push | Desenvolvedores Mobile |
+
+> **Regra Mandatória de Isolamento Documental**: Toda documentação produzida deve ser referente à branch utilizada no atual fluxo de trabalho (`docs/api`, `docs/web`, `docs/desktop`, `docs/mobile`). Documentações pertinentes a outras frentes devem obrigatoriamente ocorrer dentro de fluxos de trabalho dedicados nas suas determinadas branches.
 
 ---
 
@@ -260,9 +276,65 @@ Antes de iniciar qualquer codificação em qualquer plataforma:
 
 ---
 
-## 5. Padrão de Commits
+---
 
-### 5.1. Diretrizes de Mensagem
+## 5. Como Trabalhar na Documentação do Vault (Fluxo Concorrente docs/*)
+
+Para evitar bloqueios de envio (`push`) ou perdas de dados quando múltiplos colaboradores documentam simultaneamente, o `Vault` adota branches dedicadas por subsistema (`docs/api`, `docs/web`, `docs/desktop`, `docs/mobile`).
+
+### 5.1. Regra Mandatória de Isolamento Documental
+* Toda e qualquer documentação a ser produzida deve obrigatoriamente ser referente à branch utilizada no atual fluxo de trabalho (`docs/api`, `docs/web`, `docs/desktop`, `docs/mobile`).
+* Documentações pertinentes a outras frentes devem ocorrer estritamente dentro de fluxos de trabalho dedicados nas suas determinadas branches.
+* A branch `master` atua como a Fonte Única da Verdade homologada e recebe atualizações consolidadas exclusivamente via Pull Request no GitHub.
+
+### 5.2. Passo a Passo Operacional no Vault
+
+1. **Navegue até a pasta do Vault**:
+   ```bash
+   cd <caminho-do-projeto>/PIM/Vault
+   ```
+
+2. **Posicione-se na branch da sua plataforma e atualize**:
+   ```bash
+   # Exemplo para Web:
+   git checkout docs/web
+   git pull origin docs/web
+   ```
+   *(Para as demais frentes, utilize `docs/api`, `docs/desktop` ou `docs/mobile`)*
+
+3. **Sincronize com a base homologada (caso haja novas regras na master)**:
+   ```bash
+   git pull origin master
+   ```
+
+4. **Elabore ou atualize a documentação**:
+   * Crie especificações em `04-Specs-Backlog/Draft/` ou `Active/` com prefixo exclusivo (`SPEC-WEB-xxx.md`, `SPEC-API-xxx.md`, `SPEC-DSK-xxx.md`, `SPEC-MOB-xxx.md`).
+   * Documente particularidades de arquitetura e UX exclusivamente em `03-Systems/<SuaPlataforma>/`.
+   * Registre débitos do sistema legado referenciando o subsistema correspondente.
+
+5. **Verifique o status e comite na branch da plataforma**:
+   ```bash
+   git status
+   git add .
+   git commit -m "docs(web): inclusao da especificacao do modulo de catalogo"
+   ```
+   *(Lembre-se: formato nominal substantivado, identidade formal e sem emojis)*
+
+6. **Envie para o repositório remoto sem bloqueios**:
+   ```bash
+   git push origin docs/web
+   ```
+   *Como você está enviando para a sua própria branch de plataforma, o push nunca será bloqueado pelo trabalho dos outros membros atuando em `docs/desktop`, `docs/mobile` ou `docs/api`.*
+
+7. **Consolidação na Master**:
+   * Abra um Pull Request de `docs/<sua-plataforma>` para `master` no GitHub.
+   * Após a validação da equipe, realize o merge na `master`.
+
+---
+
+## 6. Padrão de Commits
+
+### 6.1. Diretrizes de Mensagem
 Adotamos o padrão Conventional Commits em português, mantendo a escrita técnica, formal e **sem emojis**:
 
 * `feat(<escopo>): <descrição>` - Nova funcionalidade baseada em especificação.
@@ -276,16 +348,16 @@ Adotamos o padrão Conventional Commits em português, mantendo a escrita técni
 
 ---
 
-## 6. Como Fazer Push para Branches Específicas
+## 7. Como Fazer Push para Branches Específicas
 
-### 6.1. Primeiro Push (Configurando Upstream)
+### 7.1. Primeiro Push (Configurando Upstream)
 Ao enviar uma sub-branch de feature pela primeira vez:
 
 ```bash
 git push -u origin feat/web/minha-feature
 ```
 
-### 6.2. Pushes Subsequentes
+### 7.2. Pushes Subsequentes
 Nas próximas atualizações da mesma branch:
 
 ```bash
@@ -294,21 +366,21 @@ git push origin feat/web/minha-feature
 
 ---
 
-## 7. Perigos Críticos e Cuidados Necessários
+## 8. Perigos Críticos e Cuidados Necessários
 
-### 7.1. Perigo 1: Comitar na Raiz `PIM/` em vez de `Implementacao/`
+### 8.1. Perigo 1: Comitar na Raiz `PIM/` em vez de `Implementacao/` ou `Vault/`
 * **Causa**: Estar na pasta errada ao executar `git add .` e `git commit`.
-* **Impacto**: O repositório pai apenas registrará uma alteração de metadados do submódulo, mas os arquivos de código-fonte não serão commitados no repositório de implementação.
-* **Prevenção**: Observe o prompt do terminal ou execute `pwd` / `Get-Location` para garantir que está dentro de `Implementacao/`.
+* **Impacto**: O repositório pai apenas registrará uma alteração de metadados do submódulo, mas os arquivos de código-fonte ou documentação não serão commitados no submódulo correspondente.
+* **Prevenção**: Observe o prompt do terminal ou execute `pwd` / `Get-Location` para garantir que está dentro de `Implementacao/` para código ou `Vault/` para documentação.
 
-### 7.2. Perigo 2: Uso Destrutivo de `git push --force`
-* **Causa**: Forçar a reescrita de histórico em branches compartilhadas (`develop`, `production`, `feat/api`, `feat/web`, `feat/desktop`, `feat/mobile`).
+### 8.2. Perigo 2: Uso Destrutivo de `git push --force`
+* **Causa**: Forçar a reescrita de histórico em branches compartilhadas (`develop`, `production`, `feat/api`, `feat/web`, `feat/desktop`, `feat/mobile`, `master`, `docs/*`).
 * **Impacto**: Sobrescreve e apaga o trabalho de outros desenvolvedores que já enviaram commits para o GitHub.
 * **Prevenção**:
   * É **estritamente proibido** utilizar `--force` em branches compartilhadas.
   * Em sub-branches pessoais de feature, utilize exclusivamente `--force-with-lease` caso tenha realizado rebase local.
 
-### 7.3. Perigo 3: Conflitos por Falta de Sincronização Periódica
+### 8.3. Perigo 3: Conflitos por Falta de Sincronização Periódica
 * **Causa**: Passar múltiplos dias trabalhando isolado sem integrar as mudanças da branch base da plataforma.
 * **Impacto**: Conflitos complexos e demorados no momento de integrar a funcionalidade.
 * **Prevenção**: Ao menos uma vez ao dia, integre a branch base na sua branch de feature:
@@ -321,7 +393,7 @@ git push origin feat/web/minha-feature
 
 ---
 
-## 8. Como Atualizar o Repositório Agregador (PIM)
+## 9. Como Atualizar o Repositório Agregador (PIM)
 
 Quando novas versões de código em `Implementacao/` ou de documentação em `Vault/` forem concluídas e homologadas, o repositório pai `PIM/` deve ter seus apontadores atualizados:
 
@@ -342,7 +414,7 @@ git push origin master
 
 ---
 
-## 9. Guia de Resolução de Problemas Comuns (Troubleshooting)
+## 10. Guia de Resolução de Problemas Comuns (Troubleshooting)
 
 ### Cenário A: Cometi alterações em estado de `detached HEAD`
 ```bash
